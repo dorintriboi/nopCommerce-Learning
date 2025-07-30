@@ -488,7 +488,7 @@ public partial class CategoryService : ICategoryService
         bool showHidden = false, int pageIndex = 0, int pageSize = int.MaxValue)
     {
         var categories = _categoryRepository.Table;
-
+            
         if (discountId.HasValue)
             categories = from category in categories
                 join dcm in _discountCategoryMappingRepository.Table on category.Id equals dcm.EntityId

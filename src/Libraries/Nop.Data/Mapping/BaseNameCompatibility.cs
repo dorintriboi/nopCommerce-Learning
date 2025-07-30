@@ -1,4 +1,5 @@
-﻿using Nop.Core.Domain.Catalog;
+﻿using Nop.Core.Domain.Blogs;
+using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Discounts;
@@ -29,6 +30,7 @@ public partial class BaseNameCompatibility : INameCompatibility
         { typeof(PermissionRecordCustomerRoleMapping), "PermissionRecord_Role_Mapping" },
         { typeof(ShippingMethodCountryMapping), "ShippingMethodRestrictions" },
         { typeof(ProductCategory), "Product_Category_Mapping" },
+        { typeof(BlogPostBlogCategoryMapping), "BlogPost_BlogCategory_Mapping" },
         { typeof(ProductManufacturer), "Product_Manufacturer_Mapping" },
         { typeof(ProductPicture), "Product_Picture_Mapping" },
         { typeof(ProductSpecificationAttribute), "Product_SpecificationAttribute_Mapping" },
