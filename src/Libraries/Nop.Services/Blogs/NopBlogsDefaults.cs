@@ -43,4 +43,16 @@ public static partial class NopBlogsDefaults
     public static string BlogTagsPrefix => "Nop.blogpost.tags.";
 
     #endregion
+
+    #region Category defaults
+
+    public static CacheKey CategoriesAllCacheKey => new("Nop.blogcategory.all.{0}-{1}");
+    public static CacheKey CategoriesByParentCategoryCacheKey => new("Nop.blogcategory.byparent.{0}-{1}-{2}");
+    public static CacheKey CategoriesHomepageWithoutHiddenCacheKey => new("Nop.blogcategory.homepage.withouthidden-{0}-{1}");
+    public static CacheKey CategoriesHomepageCacheKey => new("Nop.blogcategory.homepage.");
+    public static CacheKey CategoriesChildIdsCacheKey => new("Nop.blogcategory.childids.{0}-{1}-{2}");
+    public static CacheKey ChildCategoryIdLookupCacheKey => new("Nop.childblogcategoryidlookup.bystore.{0}-{1}");
+    public static CacheKey CategoryBreadcrumbCacheKey => new("Nop.category.breadcrumb.{0}-{1}-{2}-{3}-{4}");
+
+    #endregion
 }

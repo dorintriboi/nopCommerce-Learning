@@ -5,6 +5,7 @@ using Nop.Core.Domain.Blogs;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Customers;
 using Nop.Services.Blogs;
+using Nop.Services.Blogs.Blog;
 using Nop.Services.Customers;
 using Nop.Services.Helpers;
 using Nop.Services.Html;

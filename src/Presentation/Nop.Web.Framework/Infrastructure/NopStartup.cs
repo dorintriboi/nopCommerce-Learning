@@ -14,6 +14,7 @@ using Nop.Services.Authentication;
 using Nop.Services.Authentication.External;
 using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Blogs;
+using Nop.Services.Blogs.Blog;
 using Nop.Services.Caching;
 using Nop.Services.Catalog;
 using Nop.Services.Cms;

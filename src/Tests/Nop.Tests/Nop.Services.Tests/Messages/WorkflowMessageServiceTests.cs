@@ -10,6 +10,7 @@ using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Vendors;
 using Nop.Data;
 using Nop.Services.Blogs;
+using Nop.Services.Blogs.Blog;
 using Nop.Services.Catalog;
 using Nop.Services.Customers;
 using Nop.Services.Forums;

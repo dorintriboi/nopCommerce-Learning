@@ -6,6 +6,7 @@ using Nop.Core.Domain.Security;
 using Nop.Core.Events;
 using Nop.Core.Rss;
 using Nop.Services.Blogs;
+using Nop.Services.Blogs.Blog;
 using Nop.Services.Customers;
 using Nop.Services.Localization;
 using Nop.Services.Logging;

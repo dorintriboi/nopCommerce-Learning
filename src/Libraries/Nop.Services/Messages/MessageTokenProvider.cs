@@ -25,6 +25,7 @@ using Nop.Core.Events;
 using Nop.Core.Infrastructure;
 using Nop.Services.Attributes;
 using Nop.Services.Blogs;
+using Nop.Services.Blogs.Blog;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
 using Nop.Services.Customers;

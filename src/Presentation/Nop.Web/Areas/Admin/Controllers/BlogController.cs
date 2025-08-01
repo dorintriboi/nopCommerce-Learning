@@ -2,6 +2,7 @@
 using Nop.Core.Domain.Blogs;
 using Nop.Core.Events;
 using Nop.Services.Blogs;
+using Nop.Services.Blogs.Blog;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Messages;

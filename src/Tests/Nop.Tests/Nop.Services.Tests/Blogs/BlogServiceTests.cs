@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Nop.Core.Domain.Blogs;
 using Nop.Services.Blogs;
+using Nop.Services.Blogs.Blog;
 using NUnit.Framework;
 
 namespace Nop.Tests.Nop.Services.Tests.Blogs;

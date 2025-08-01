@@ -5,6 +5,7 @@ using Nop.Core.Events;
 using Nop.Data;
 using Nop.Services.Authentication.External;
 using Nop.Services.Blogs;
+using Nop.Services.Blogs.Blog;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
 using Nop.Services.Customers;
