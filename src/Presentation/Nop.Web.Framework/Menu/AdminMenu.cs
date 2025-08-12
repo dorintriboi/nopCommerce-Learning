@@ -413,6 +413,18 @@ public partial class AdminMenu : IAdminMenu
                         },
                         new()
                         {
+                            SystemName = "Blog categories",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Blog.Categories"),
+                            PermissionNames =
+                                new List<string>
+                                {
+                                    StandardPermission.ContentManagement.BLOG_CATEGORIES_VIEW
+                                },
+                            Url = GetMenuItemUrl("BlogCategory", "List"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
                             SystemName = "Polls",
                             Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Polls"),
                             PermissionNames = new List<string> { StandardPermission.ContentManagement.POLLS_VIEW },

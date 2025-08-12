@@ -120,6 +120,8 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
         new ("Admin area. Blog. Create, edit, delete", StandardPermission.ContentManagement.BLOG_CREATE_EDIT_DELETE, nameof(StandardPermission.ContentManagement), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Blog comments. View", StandardPermission.ContentManagement.BLOG_COMMENTS_VIEW, nameof(StandardPermission.ContentManagement), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Blog comments. Create, edit, delete", StandardPermission.ContentManagement.BLOG_COMMENTS_CREATE_EDIT_DELETE, nameof(StandardPermission.ContentManagement), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Blog categories. View", StandardPermission.ContentManagement.BLOG_CATEGORIES_VIEW, nameof(StandardPermission.ContentManagement), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Blog categories. Create, edit, delete", StandardPermission.ContentManagement.BLOG_CATEGORIES_CREATE_EDIT_DELETE, nameof(StandardPermission.ContentManagement), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Polls. View", StandardPermission.ContentManagement.POLLS_VIEW, nameof(StandardPermission.ContentManagement), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Polls. Create, edit, delete", StandardPermission.ContentManagement.POLLS_CREATE_EDIT_DELETE, nameof(StandardPermission.ContentManagement), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Forums. View", StandardPermission.ContentManagement.FORUMS_VIEW, nameof(StandardPermission.ContentManagement), NopCustomerDefaults.AdministratorsRoleName),

@@ -36,6 +36,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IBlogModelFactory, BlogModelFactory>();
         services.AddScoped<ICampaignModelFactory, CampaignModelFactory>();
         services.AddScoped<ICategoryModelFactory, CategoryModelFactory>();
+        services.AddScoped<IBlogCategoryModelFactory, BlogCategoryModelFactory>();
         services.AddScoped<ICheckoutAttributeModelFactory, CheckoutAttributeModelFactory>();
         services.AddScoped<ICommonModelFactory, CommonModelFactory>();
         services.AddScoped<ICountryModelFactory, CountryModelFactory>();

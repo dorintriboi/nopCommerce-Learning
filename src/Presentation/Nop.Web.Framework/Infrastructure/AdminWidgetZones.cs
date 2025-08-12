@@ -34,6 +34,7 @@ public static partial class AdminWidgetZones
     public static string CategoryDetailsBlock => "admin_category_details_block";
     public static string CategoryDetailsButtons => "admin_category_details_buttons";
     public static string CategoryListButtons => "admin_category_list_buttons";
+    public static string BlogCategoryListButtons => "admin_blog_category_list_buttons";
     public static string CategoryTemplateListButtons => "admin_category_template_list_buttons";
     public static string CheckoutAttributeDetailsBlock => "admin_checkout_attribute_details_block";
     public static string CheckoutAttributeDetailsButtons => "admin_checkout_attribute_details_buttons";
