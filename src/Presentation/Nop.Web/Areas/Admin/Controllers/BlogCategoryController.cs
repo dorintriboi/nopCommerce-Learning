@@ -2,6 +2,7 @@
 using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Domain.Blogs;
+using Nop.Core.Domain.Discounts;
 using Nop.Services.Blogs.Category;
 using Nop.Services.Catalog;
 using Nop.Services.Customers;
@@ -15,6 +16,7 @@ using Nop.Services.Security;
 using Nop.Services.Seo;
 using Nop.Services.Stores;
 using Nop.Web.Areas.Admin.Factories;
+using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Blogs.Categories;
 using Nop.Web.Areas.Admin.Models.Catalog;
 using Nop.Web.Framework.Factories;
@@ -28,7 +30,7 @@ public partial class BlogCategoryController: BaseAdminController
 
     protected readonly IAclService _aclService;
     protected readonly IBlogCategoryModelFactory _categoryModelFactory;
-    protected readonly ICategoryService _categoryService;
+    protected readonly IBlogCategoryService _blogCategoryService;
     protected readonly ICustomerActivityService _customerActivityService;
     protected readonly ICustomerService _customerService;
     protected readonly IDiscountService _discountService;
@@ -53,7 +55,7 @@ public partial class BlogCategoryController: BaseAdminController
     public BlogCategoryController(
         IAclService aclService,
         IBlogCategoryModelFactory categoryModelFactory,
-        ICategoryService categoryService,
+        IBlogCategoryService blogCategoryService,
         ICustomerActivityService customerActivityService,
         ICustomerService customerService,
         IDiscountService discountService,
@@ -73,7 +75,7 @@ public partial class BlogCategoryController: BaseAdminController
     {
         _aclService = aclService;
         _categoryModelFactory = categoryModelFactory;
-        _categoryService = categoryService;
+        _blogCategoryService = blogCategoryService;
         _customerActivityService = customerActivityService;
         _customerService = customerService;
         _discountService = discountService;
@@ -96,7 +98,7 @@ public partial class BlogCategoryController: BaseAdminController
 
     #region Utilities
 
-    protected virtual async Task UpdateLocalesAsync(BlogCategory category, CategoryModel model)
+    protected virtual async Task UpdateLocalesAsync(BlogCategory category, BlogCategoryModel model)
     {
         foreach (var localized in model.Locales)
         {
@@ -163,28 +165,44 @@ public partial class BlogCategoryController: BaseAdminController
 
         return Json(model);
     }
+    
+    [HttpPost]
+    [CheckPermission(StandardPermission.ContentManagement.BLOG_CATEGORIES_CREATE_EDIT_DELETE)]
+    public virtual async Task<IActionResult> DeleteSelected(ICollection<int> selectedIds)
+    {
+        if (selectedIds == null || !selectedIds.Any())
+            return NoContent();
 
-    /*#region Create / Edit / Delete
+        var categories = await _blogCategoryService.GetCategoriesByIdsAsync(selectedIds.ToArray());
 
-    [CheckPermission(StandardPermission.Catalog.CATEGORIES_CREATE_EDIT_DELETE)]
+        await _blogCategoryService.DeleteCategoriesAsync(categories);
+
+        //activity log
+        var activityLogFormat = await _localizationService.GetResourceAsync("ActivityLog.DeleteCategory");
+        await _customerActivityService.InsertActivitiesAsync("DeleteCategory", categories, category => string.Format(activityLogFormat, category.Name));
+
+        return Json(new { Result = true });
+    }
+    
+    [CheckPermission(StandardPermission.ContentManagement.BLOG_CATEGORIES_CREATE_EDIT_DELETE)]
     public virtual async Task<IActionResult> Create()
     {
         //prepare model
-        var model = await _categoryModelFactory.PrepareCategoryModelAsync(new CategoryModel(), null);
+        var model = await _categoryModelFactory.PrepareCategoryModelAsync(new BlogCategoryModel(), null);
 
         return View(model);
     }
-
+    
     [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-    [CheckPermission(StandardPermission.Catalog.CATEGORIES_CREATE_EDIT_DELETE)]
-    public virtual async Task<IActionResult> Create(CategoryModel model, bool continueEditing)
+    [CheckPermission(StandardPermission.ContentManagement.BLOG_CATEGORIES_CREATE_EDIT_DELETE)]
+    public virtual async Task<IActionResult> Create(BlogCategoryModel model, bool continueEditing)
     {
         if (ModelState.IsValid)
         {
-            var category = model.ToEntity<Category>();
+            var category = model.ToEntity<BlogCategory>();
             category.CreatedOnUtc = DateTime.UtcNow;
             category.UpdatedOnUtc = DateTime.UtcNow;
-            await _categoryService.InsertCategoryAsync(category);
+            await _blogCategoryService.InsertCategoryAsync(category);
 
             //search engine name
             model.SeName = await _urlRecordService.ValidateSeNameAsync(category, model.SeName, category.Name, true);
@@ -193,27 +211,16 @@ public partial class BlogCategoryController: BaseAdminController
             //locales
             await UpdateLocalesAsync(category, model);
 
-            //discounts
-            var allDiscounts = await _discountService.GetAllDiscountsAsync(DiscountType.AssignedToCategories, showHidden: true, isActive: null);
-            foreach (var discount in allDiscounts)
-            {
-                if (model.SelectedDiscountIds != null && model.SelectedDiscountIds.Contains(discount.Id))
-                    await _categoryService.InsertDiscountCategoryMappingAsync(new DiscountCategoryMapping { DiscountId = discount.Id, EntityId = category.Id });
-            }
-
-            await _categoryService.UpdateCategoryAsync(category);
+            await _blogCategoryService.UpdateCategoryAsync(category);
 
             //update picture seo file name
             await UpdatePictureSeoNamesAsync(category);
 
-            //stores
-            await _categoryService.UpdateCategoryStoreMappingsAsync(category, model.SelectedStoreIds);
-
             //activity log
-            await _customerActivityService.InsertActivityAsync("AddNewCategory",
-                string.Format(await _localizationService.GetResourceAsync("ActivityLog.AddNewCategory"), category.Name), category);
+            await _customerActivityService.InsertActivityAsync("AddNewBlogCategory",
+                string.Format(await _localizationService.GetResourceAsync("ActivityLog.AddNewBlogCategory"), category.Name), category);
 
-            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Catalog.Categories.Added"));
+            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.ContentManagement.BlogCategories.Added"));
 
             if (!continueEditing)
                 return RedirectToAction("List");
@@ -227,12 +234,12 @@ public partial class BlogCategoryController: BaseAdminController
         //if we got this far, something failed, redisplay form
         return View(model);
     }
-
-    [CheckPermission(StandardPermission.Catalog.CATEGORIES_VIEW)]
+    
+    [CheckPermission(StandardPermission.ContentManagement.BLOG_CATEGORIES_VIEW)]
     public virtual async Task<IActionResult> Edit(int id)
     {
         //try to get a category with the specified id
-        var category = await _categoryService.GetCategoryByIdAsync(id);
+        var category = await _blogCategoryService.GetCategoryByIdAsync(id);
         if (category == null || category.Deleted)
             return RedirectToAction("List");
 
@@ -241,6 +248,8 @@ public partial class BlogCategoryController: BaseAdminController
 
         return View(model);
     }
+
+    /*#region Create / Edit / Delete
 
     [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
     [CheckPermission(StandardPermission.Catalog.CATEGORIES_CREATE_EDIT_DELETE)]

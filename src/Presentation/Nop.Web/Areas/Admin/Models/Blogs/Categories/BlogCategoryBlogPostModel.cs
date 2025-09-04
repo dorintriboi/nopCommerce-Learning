@@ -9,15 +9,15 @@ public record BlogCategoryBlogPostModel: BaseNopEntityModel
 
     public int CategoryId { get; set; }
 
-    public int ProductId { get; set; }
+    public int BlogPostId { get; set; }
 
-    [NopResourceDisplayName("Admin.Catalog.Categories.Products.Fields.Product")]
-    public string ProductName { get; set; }
+    [NopResourceDisplayName("Admin.ContentManagement.BlogCategories.BlogPosts.Fields.Product")]
+    public string BlogPostName { get; set; }
 
-    [NopResourceDisplayName("Admin.Catalog.Categories.Products.Fields.IsFeaturedProduct")]
+    [NopResourceDisplayName("Admin.ContentManagement.BlogCategories.BlogPosts.Fields.IsFeaturedProduct")]
     public bool IsFeaturedProduct { get; set; }
 
-    [NopResourceDisplayName("Admin.Catalog.Categories.Products.Fields.DisplayOrder")]
+    [NopResourceDisplayName("Admin.ContentManagement.BlogCategories.BlogPosts.Fields.DisplayOrder")]
     public int DisplayOrder { get; set; }
 
     #endregion

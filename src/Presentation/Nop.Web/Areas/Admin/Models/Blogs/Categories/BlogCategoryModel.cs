@@ -26,7 +26,7 @@ public partial record BlogCategoryModel: BaseNopEntityModel, IAclSupportedModel,
         SelectedCustomerRoleIds = new List<int>();
         AvailableCustomerRoles = new List<SelectListItem>();
 
-        CategoryProductSearchModel = new CategoryProductSearchModel();
+        BlogCategoryBlogPostSearchModel = new BlogCategoryBlogPostSearchModel();
     }
 
     #endregion
@@ -98,12 +98,7 @@ public partial record BlogCategoryModel: BaseNopEntityModel, IAclSupportedModel,
 
     public IList<SelectListItem> AvailableCategories { get; set; }
 
-    //discounts
-    [NopResourceDisplayName("Admin.Catalog.Categories.Fields.Discounts")]
-    public IList<int> SelectedDiscountIds { get; set; }
-    public IList<SelectListItem> AvailableDiscounts { get; set; }
-
-    public CategoryProductSearchModel CategoryProductSearchModel { get; set; }
+    public BlogCategoryBlogPostSearchModel BlogCategoryBlogPostSearchModel { get; set; }
 
     public bool PreTranslationAvailable { get; set; }
 

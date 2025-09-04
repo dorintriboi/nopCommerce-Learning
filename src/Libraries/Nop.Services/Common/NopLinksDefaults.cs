@@ -85,6 +85,11 @@ public static partial class NopLinksDefaults
         /// Gets a URL of the Categories docs page
         /// </summary>
         public static string Categories => "https://docs.nopcommerce.com/running-your-store/catalog/categories.html";
+        
+        /// <summary>
+        /// Gets a URL of the Blog categories docs page
+        /// </summary>
+        public static string BlogCategories => "https://docs.nopcommerce.com/running-your-store/content-management/blog-categories.html";
 
         /// <summary>
         /// Gets a URL of the manufacturers docs page

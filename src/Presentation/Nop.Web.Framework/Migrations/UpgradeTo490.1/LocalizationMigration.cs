@@ -27,6 +27,17 @@ public class LocalizationMigration: MigrationBase
             //#4834
             ["Security.Permission.ContentManagement.BlogCategoriesCreateEditDelete"] = "Admin area. Blog categories. Create, edit, delete",
             ["Security.Permission.ContentManagement.BlogCategoriesView"] = "Admin area. Blog categories. View",
+            ["Admin.ContentManagement.Blog.Categories"] = "Blog categories",
+            ["Admin.Documentation.Reference.Blog.Categories"] = "Learn more about <a target=\"_blank\" href=\"{0}\">blog categories</a>",
+            ["Admin.ContentManagement.BlogCategories.Fields.Name"] = "Name",
+            ["Admin.ContentManagement.BlogCategories.Fields.Published"] = "Published",
+            ["Admin.ContentManagement.BlogCategories.Fields.DisplayOrder"] = "Display order",
+            ["Admin.ContentManagement.BlogCategories.List.ImportFromExcelTip"] = "Imported blog categories are distinguished by ID. If the ID already exists, then its corresponding category will be updated. You should not specify ID (leave 0) for new categories.",
+            ["Admin.ContentManagement.BlogCategories.List.SearchCategoryName"] = "Category name",
+            ["Admin.ContentManagement.BlogCategories.List.SearchPublished"] = "Published",
+            ["Admin.ContentManagement.BlogCategories.List.SearchPublished.All"] = "All",
+            ["Admin.ContentManagement.BlogCategories.List.SearchPublished.PublishedOnly"] = "Published only",
+            ["Admin.ContentManagement.BlogCategories.List.SearchPublished.UnpublishedOnly"] = "Unpublished only"
         }, languageId);
 
         #endregion

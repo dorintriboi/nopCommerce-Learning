@@ -15,6 +15,7 @@ using Nop.Services.Authentication.External;
 using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Blogs;
 using Nop.Services.Blogs.Blog;
+using Nop.Services.Blogs.Category;
 using Nop.Services.Caching;
 using Nop.Services.Catalog;
 using Nop.Services.Cms;
@@ -136,6 +137,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IStoreContext, WebStoreContext>();
 
         //services
+        services.AddScoped<IBlogCategoryService, BlogCategoryService>();
         services.AddScoped<IBackInStockSubscriptionService, BackInStockSubscriptionService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ICompareProductsService, CompareProductsService>();

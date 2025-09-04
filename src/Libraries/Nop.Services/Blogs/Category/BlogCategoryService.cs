@@ -378,7 +378,7 @@ public class BlogCategoryService(
     {
         ArgumentNullException.ThrowIfNull(category);
 
-        var breadcrumbCacheKey = staticCacheManager.PrepareKeyForDefaultCache(NopBlogsDefaults.CategoryBreadcrumbCacheKey,
+        var breadcrumbCacheKey = staticCacheManager.PrepareKeyForDefaultCache(NopBlogsDefaults.BlogCategoryBreadcrumbCacheKey,
             category,
             await customerService.GetCustomerRoleIdsAsync(await workContext.GetCurrentCustomerAsync()),
             await workContext.GetWorkingLanguageAsync(),

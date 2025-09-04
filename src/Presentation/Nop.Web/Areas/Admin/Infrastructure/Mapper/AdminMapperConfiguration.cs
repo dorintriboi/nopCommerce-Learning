@@ -38,6 +38,7 @@ using Nop.Services.Shipping.Pickup;
 using Nop.Services.Tax;
 using Nop.Web.Areas.Admin.Models.Affiliates;
 using Nop.Web.Areas.Admin.Models.Blogs;
+using Nop.Web.Areas.Admin.Models.Blogs.Categories;
 using Nop.Web.Areas.Admin.Models.Catalog;
 using Nop.Web.Areas.Admin.Models.Cms;
 using Nop.Web.Areas.Admin.Models.Common;
@@ -303,6 +304,17 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.PostsPageSize_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ShowHeaderRssUrl_OverrideForStore, options => options.Ignore());
         CreateMap<BlogSettingsModel, BlogSettings>();
+
+        CreateMap<BlogCategory, BlogCategoryModel>()
+            .ForMember(model => model.AvailableCategories, options => options.Ignore())
+            .ForMember(model => model.AvailableCategoryTemplates, options => options.Ignore())
+            .ForMember(model => model.Breadcrumb, options => options.Ignore())
+            .ForMember(model => model.BlogCategoryBlogPostSearchModel, options => options.Ignore())
+            .ForMember(model => model.SeName, options => options.Ignore());
+        CreateMap<BlogCategoryModel, BlogCategory>()
+            .ForMember(entity => entity.CreatedOnUtc, options => options.Ignore())
+            .ForMember(entity => entity.Deleted, options => options.Ignore())
+            .ForMember(entity => entity.UpdatedOnUtc, options => options.Ignore());
     }
 
     /// <summary>

@@ -55,4 +55,10 @@ public static partial class NopBlogsDefaults
     public static CacheKey CategoryBreadcrumbCacheKey => new("Nop.category.breadcrumb.{0}-{1}-{2}-{3}-{4}");
 
     #endregion
+    
+    
+    #region Blog Category defaults
+    public static CacheKey BlogCategoryBreadcrumbCacheKey => new("Nop.category.breadcrumb.{0}-{1}-{2}-{3}");
+
+    #endregion
 }
