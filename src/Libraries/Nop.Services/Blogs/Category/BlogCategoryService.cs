@@ -18,7 +18,7 @@ public class BlogCategoryService(
     IAclService aclService,
     IStaticCacheManager staticCacheManager): IBlogCategoryService
 {
-    public async Task<bool> CanVendorAddProductsAsync(BlogCategory category, IList<BlogCategory> allCategories = null)
+    public async Task<bool> CanVendorAddBlogPostsAsync(BlogCategory category, IList<BlogCategory> allCategories = null)
     {
         ArgumentNullException.ThrowIfNull(category);
 
@@ -262,6 +262,11 @@ public class BlogCategoryService(
             await DeleteCategoryAsync(category);
     }
 
+    public Task DeleteBlogCategoryAsync(BlogPostBlogCategoryMapping blogCategory)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task DeleteProductCategoryAsync(BlogPostBlogCategoryMapping blogCategory)
     {
         await blogPostBlogCategoryMappingRepository.DeleteAsync(blogCategory);
@@ -272,7 +277,7 @@ public class BlogCategoryService(
         await blogPostBlogCategoryMappingRepository.DeleteAsync(productCategories);
     }
 
-    public async Task<IPagedList<BlogPostBlogCategoryMapping>> GetProductCategoriesByCategoryIdAsync(int categoryId, int pageIndex = 0, int pageSize = Int32.MaxValue,
+    public async Task<IPagedList<BlogPostBlogCategoryMapping>> GetBlogCategoriesByCategoryIdAsync(int categoryId, int pageIndex = 0, int pageSize = Int32.MaxValue,
         bool showHidden = false)
     {
         if (categoryId == 0)
@@ -298,12 +303,12 @@ public class BlogCategoryService(
         return await query.ToPagedListAsync(pageIndex, pageSize);
     }
 
-    public async Task<BlogPostBlogCategoryMapping> GetProductCategoryByIdAsync(int productCategoryId)
+    public async Task<BlogPostBlogCategoryMapping> GetBlogCategoryByIdAsync(int productCategoryId)
     {
         return await blogPostBlogCategoryMappingRepository.GetByIdAsync(productCategoryId, cache => default);
     }
 
-    public async Task InsertProductCategoryAsync(BlogPostBlogCategoryMapping productCategory)
+    public async Task InsertBlogPostBlogCategoryAsync(BlogPostBlogCategoryMapping productCategory)
     {
         await blogPostBlogCategoryMappingRepository.InsertAsync(productCategory);
     }

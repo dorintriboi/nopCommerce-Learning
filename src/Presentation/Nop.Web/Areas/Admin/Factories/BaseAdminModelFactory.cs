@@ -10,6 +10,7 @@ using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Translation;
 using Nop.Services;
+using Nop.Services.Blogs.Category;
 using Nop.Services.Catalog;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
@@ -38,6 +39,7 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
     #region Fields
 
     protected readonly ICategoryService _categoryService;
+    protected readonly IBlogCategoryService _blogCategoryService;
     protected readonly ICategoryTemplateService _categoryTemplateService;
     protected readonly ICountryService _countryService;
     protected readonly ICurrencyService _currencyService;
@@ -93,6 +95,7 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         IVendorService vendorService,
         IWarehouseService warehouseService,
         IWorkContext workContext,
+        IBlogCategoryService blogCategoryService,
         TranslationSettings translationSettings)
     {
         _categoryService = categoryService;
@@ -121,6 +124,7 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         _warehouseService = warehouseService;
         _workContext = workContext;
         _translationSettings = translationSettings;
+        _blogCategoryService = blogCategoryService;
     }
 
     #endregion
@@ -170,6 +174,33 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
             result.Add(new SelectListItem
             {
                 Text = await _categoryService.GetFormattedBreadCrumbAsync(category, categories),
+                Value = category.Id.ToString()
+            });
+        }
+
+        return result;
+    }
+    
+    /// <summary>
+    /// Get blog category list
+    /// </summary>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the category list
+    /// </returns>
+    protected virtual async Task<List<SelectListItem>> GetBlogCategoryListAsync()
+    {
+        var categories = await _staticCacheManager.GetAsync(NopModelCacheDefaults.BlogCategoriesListKey, async () => await _blogCategoryService.GetAllCategoriesAsync(showHidden: true));
+
+        var result = new List<SelectListItem>();
+        foreach (var category in categories)
+        {
+            if (!await _blogCategoryService.CanVendorAddBlogPostsAsync(category, categories))
+                continue;
+
+            result.Add(new SelectListItem
+            {
+                Text = await _blogCategoryService.GetFormattedBreadCrumbAsync(category, categories),
                 Value = category.Id.ToString()
             });
         }
@@ -536,6 +567,28 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         //prepare available categories
         var availableCategoryItems = await GetCategoryListAsync();
         foreach (var categoryItem in availableCategoryItems)
+        {
+            items.Add(categoryItem);
+        }
+
+        //insert special item for the default value
+        await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText);
+    }
+
+    /// <summary>
+    /// Prepare available blog categories
+    /// </summary>
+    /// <param name="items">Blog category items</param>
+    /// <param name="withSpecialDefaultItem">Whether to insert the first special item for the default value</param>
+    /// <param name="defaultItemText">Default item text; pass null to use default value of the default item text</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    public async Task PrepareBlogCategoriesAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        //prepare available categories
+        var availableBlogCategoryItems = await GetBlogCategoryListAsync();
+        foreach (var categoryItem in availableBlogCategoryItems)
         {
             items.Add(categoryItem);
         }

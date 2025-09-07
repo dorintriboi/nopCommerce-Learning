@@ -1,4 +1,5 @@
-﻿using Nop.Core.Domain.Seo;
+﻿using Nop.Core.Domain.Security;
+using Nop.Core.Domain.Seo;
 using Nop.Core.Domain.Stores;
 
 namespace Nop.Core.Domain.Blogs;
@@ -6,7 +7,7 @@ namespace Nop.Core.Domain.Blogs;
 /// <summary>
 /// Represents a blog post
 /// </summary>
-public partial class BlogPost : BaseEntity, ISlugSupported, IStoreMappingSupported
+public partial class BlogPost : BaseEntity, ISlugSupported, IStoreMappingSupported, IAclSupported
 {
     /// <summary>
     /// Gets or sets the language identifier
@@ -77,4 +78,6 @@ public partial class BlogPost : BaseEntity, ISlugSupported, IStoreMappingSupport
     /// Gets or sets the date and time of entity creation
     /// </summary>
     public DateTime CreatedOnUtc { get; set; }
+
+    public bool SubjectToAcl { get; set; }
 }

@@ -38,33 +38,33 @@ public interface IBlogCategoryModelFactory
     Task<BlogCategoryModel> PrepareCategoryModelAsync(BlogCategoryModel model, BlogCategory category, bool excludeProperties = false);
 
     /// <summary>
-    /// Prepare paged category product list model
+    /// Prepare paged category blog list model
     /// </summary>
     /// <param name="searchModel">Category product search model</param>
     /// <param name="category">Category</param>
     /// <returns>
     /// A task that represents the asynchronous operation
-    /// The task result contains the category product list model
+    /// The task result contains the category blog list model
     /// </returns>
-    Task<BlogCategoryBlogPostListModel> PrepareCategoryProductListModelAsync(BlogCategoryBlogPostSearchModel searchModel, BlogCategory category);
+    Task<BlogCategoryBlogPostListModel> PrepareCategoryBlogListModelAsync(BlogCategoryBlogPostSearchModel searchModel, BlogCategory category);
 
     /// <summary>
-    /// Prepare product search model to add to the category
+    /// Prepare blog search model to add to the category
     /// </summary>
-    /// <param name="searchModel">Product search model to add to the category</param>
+    /// <param name="searchModel">Blog search model to add to the category</param>
     /// <returns>
     /// A task that represents the asynchronous operation
-    /// The task result contains the product search model to add to the category
+    /// The task result contains the blog search model to add to the category
     /// </returns>
-    Task<AddBlogToCategorySearchModel> PrepareAddProductToCategorySearchModelAsync(AddBlogToCategorySearchModel searchModel);
+    Task<AddBlogToCategorySearchModel> PrepareAddBlogToCategorySearchModelAsync(AddBlogToCategorySearchModel searchModel);
 
     /// <summary>
-    /// Prepare paged product list model to add to the category
+    /// Prepare paged blog list model to add to the category
     /// </summary>
-    /// <param name="searchModel">Product search model to add to the category</param>
+    /// <param name="searchModel">Blog search model to add to the category</param>
     /// <returns>
     /// A task that represents the asynchronous operation
-    /// The task result contains the product list model to add to the category
+    /// The task result contains the blog list model to add to the category
     /// </returns>
-    Task<AddBlogToCategoryListModel> PrepareAddProductToCategoryListModelAsync(AddBlogToCategoryListModel searchModel);
+    Task<AddBlogToCategoryListModel> PrepareAddBlogToCategoryListModelAsync(AddBlogToCategorySearchModel searchModel);
 }

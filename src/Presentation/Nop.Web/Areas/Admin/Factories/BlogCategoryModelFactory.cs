@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core.Domain.Blogs;
 using Nop.Core.Domain.Catalog;
+using Nop.Services.Blogs.Blog;
 using Nop.Services.Blogs.Category;
 using Nop.Services.Localization;
 using Nop.Services.Seo;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
+using Nop.Web.Areas.Admin.Models.Blogs;
 using Nop.Web.Areas.Admin.Models.Blogs.Categories;
 using Nop.Web.Framework.Factories;
 using Nop.Web.Framework.Models.Extensions;
@@ -17,6 +19,7 @@ public partial class BlogCategoryModelFactory(
     IBaseAdminModelFactory baseAdminModelFactory,
     ILocalizedModelFactory localizedModelFactory,
     IBlogCategoryService blogCategoryService,
+    IBlogService blogService,
     IUrlRecordService urlRecordService) : IBlogCategoryModelFactory
 {
     public async Task<BlogCategorySearchModel> PrepareCategorySearchModelAsync(BlogCategorySearchModel searchModel)
@@ -120,35 +123,93 @@ public partial class BlogCategoryModelFactory(
         await baseAdminModelFactory.PrepareCategoryTemplatesAsync(model.AvailableCategoryTemplates, false);
 
         //prepare available parent categories
-        await baseAdminModelFactory.PrepareCategoriesAsync(model.AvailableCategories,
-            defaultItemText: await localizationService.GetResourceAsync("Admin.ContentManagement.BlogCategories.Fields.Parent.None"));
+        await baseAdminModelFactory.PrepareBlogCategoriesAsync(model.AvailableCategories,
+            defaultItemText: await localizationService.GetResourceAsync("Admin.ContentManagement.Blog.Categories.Fields.Parent.None"));
 
         await baseAdminModelFactory.PreparePreTranslationSupportModelAsync(model);
 
         return model;
     }
 
-    public Task<BlogCategoryBlogPostListModel> PrepareCategoryProductListModelAsync(BlogCategoryBlogPostSearchModel searchModel, BlogCategory category)
+    public async Task<BlogCategoryBlogPostListModel> PrepareCategoryBlogListModelAsync(BlogCategoryBlogPostSearchModel searchModel, BlogCategory category)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        ArgumentNullException.ThrowIfNull(category);
+
+        //get product categories
+        var productCategories = await blogCategoryService.GetBlogCategoriesByCategoryIdAsync(category.Id,
+            showHidden: true,
+            pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize);
+
+        //prepare grid model
+        var model = await new BlogCategoryBlogPostListModel().PrepareToGridAsync(searchModel, productCategories, () =>
+        {
+            return productCategories.SelectAwait(async blogCategory =>
+            {
+                //fill in model values from the entity
+                var categoryProductModel = blogCategory.ToModel<BlogCategoryBlogPostModel>();
+
+                //fill in additional values (not existing in the entity)
+                categoryProductModel.BlogPostName = (await blogService.GetBlogPostByIdAsync(blogCategory.BlogPostId))?.Title;
+
+                return categoryProductModel;
+            });
+        });
+
+        return model;
     }
 
-    public Task<AddBlogToCategorySearchModel> PrepareAddProductToCategorySearchModelAsync(AddBlogToCategorySearchModel searchModel)
+    public async Task<AddBlogToCategorySearchModel> PrepareAddBlogToCategorySearchModelAsync(AddBlogToCategorySearchModel searchModel)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        //prepare available categories
+        await baseAdminModelFactory.PrepareCategoriesAsync(searchModel.AvailableCategories);
+
+        //prepare available manufacturers
+        await baseAdminModelFactory.PrepareManufacturersAsync(searchModel.AvailableManufacturers);
+
+        //prepare available vendors
+        await baseAdminModelFactory.PrepareVendorsAsync(searchModel.AvailableVendors);
+
+        //prepare available product types
+        await baseAdminModelFactory.PrepareProductTypesAsync(searchModel.AvailableBlogTypes);
+
+        //prepare page parameters
+        searchModel.SetPopupGridPageSize();
+
+        return searchModel;
     }
 
-    public Task<AddBlogToCategoryListModel> PrepareAddProductToCategoryListModelAsync(AddBlogToCategoryListModel searchModel)
+    public async Task<AddBlogToCategoryListModel> PrepareAddBlogToCategoryListModelAsync(AddBlogToCategorySearchModel searchModel)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        //get products
+        var products = await blogService.SearchBlogsAsync(showHidden: true,
+            categoryIds: new List<int> { searchModel.SearchCategoryId },
+            manufacturerIds: new List<int> { searchModel.SearchManufacturerId },
+            vendorId: searchModel.SearchVendorId,
+            keywords: searchModel.SearchBlogName,
+            pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize);
+
+        //prepare grid model
+        var model = await new AddBlogToCategoryListModel().PrepareToGridAsync(searchModel, products, () =>
+        {
+            return products.SelectAwait(async product =>
+            {
+                var productModel = product.ToModel<BlogPostModel>();
+
+                productModel.SeName = await urlRecordService.GetSeNameAsync(product, 0, true, false);
+
+                return productModel;
+            });
+        });
+
+        return model;
     }
     
-    /// <summary>
-    /// Prepare category product search model
-    /// </summary>
-    /// <param name="searchModel">Category product search model</param>
-    /// <param name="category">Category</param>
-    /// <returns>Category product search model</returns>
     protected virtual BlogCategoryBlogPostSearchModel PrepareCategoryBlogPostSearchModel(BlogCategoryBlogPostSearchModel searchModel, BlogCategory category)
     {
         ArgumentNullException.ThrowIfNull(searchModel);

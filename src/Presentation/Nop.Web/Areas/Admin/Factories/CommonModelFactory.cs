@@ -22,6 +22,7 @@ using Nop.Services.Authentication.External;
 using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Blogs;
 using Nop.Services.Blogs.Blog;
+using Nop.Services.Blogs.Category;
 using Nop.Services.Catalog;
 using Nop.Services.Cms;
 using Nop.Services.Common;
@@ -42,6 +43,7 @@ using Nop.Services.Tax;
 using Nop.Services.Topics;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Blogs;
+using Nop.Web.Areas.Admin.Models.Blogs.Categories;
 using Nop.Web.Areas.Admin.Models.Catalog;
 using Nop.Web.Areas.Admin.Models.Common;
 using Nop.Web.Areas.Admin.Models.Localization;
@@ -69,6 +71,7 @@ public partial class CommonModelFactory : ICommonModelFactory
     protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
     protected readonly IBlogService _blogService;
     protected readonly ICategoryService _categoryService;
+    protected readonly IBlogCategoryService _blogCategoryService;
     protected readonly ICurrencyService _currencyService;
     protected readonly ICustomerService _customerService;
     protected readonly IDateTimeHelper _dateTimeHelper;
@@ -120,6 +123,7 @@ public partial class CommonModelFactory : ICommonModelFactory
         IBaseAdminModelFactory baseAdminModelFactory,
         IBlogService blogService,
         ICategoryService categoryService,
+        IBlogCategoryService blogCategoryService,
         ICurrencyService currencyService,
         ICustomerService customerService,
         IDateTimeHelper dateTimeHelper,
@@ -205,6 +209,7 @@ public partial class CommonModelFactory : ICommonModelFactory
         _measureSettings = measureSettings;
         _nopHttpClient = nopHttpClient;
         _proxySettings = proxySettings;
+        _blogCategoryService = blogCategoryService;
     }
 
     #endregion
@@ -1263,6 +1268,10 @@ public partial class CommonModelFactory : ICommonModelFactory
             case CategoryModel categoryModel:
                 var category = await _categoryService.GetCategoryByIdAsync(categoryModel.Id);
                 return await PrepareMultistorePreviewModelsForEntityAsync(category);
+            
+            case BlogCategoryModel categoryModel:
+                var blogCategory = await _blogCategoryService.GetCategoryByIdAsync(categoryModel.Id);
+                return await PrepareMultistorePreviewModelsForEntityAsync(blogCategory);
 
             case ManufacturerModel manufacturerModel:
                 var manufacturerEntity = await _manufacturerService.GetManufacturerByIdAsync(manufacturerModel.Id);

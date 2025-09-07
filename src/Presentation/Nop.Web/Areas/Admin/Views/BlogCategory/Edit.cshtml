@@ -10,10 +10,10 @@
 <form asp-controller="BlogCategory" asp-action="Edit" method="post" id="blog-category-form">
     <div class="content-header clearfix">
         <h1 class="float-left">
-            @T("Admin.ContentManagement.BlogCategories.EditBlogCategoryDetails") - @Model.Name
+            @T("Admin.ContentManagement.Blog.Categories.EditBlogCategoryDetails") - @Model.Name
             <small>
                 <i class="fas fa-arrow-circle-left"></i>
-                <a asp-action="List">@T("Admin.ContentManagement.BlogCategories.BackToList")</a>
+                <a asp-action="List">@T("Admin.ContentManagement.Blog.Categories.BackToList")</a>
             </small>
         </h1>
         <div class="float-right">
@@ -30,7 +30,7 @@
                 <i class="far fa-floppy-disk"></i>
                 @T("Admin.Common.SaveContinue")
             </button>
-            <span id="category-delete" class="btn btn-danger">
+            <span id="blog-category-delete" class="btn btn-danger">
                 <i class="far fa-trash-can"></i>
                 @T("Admin.Common.Delete")
             </span>

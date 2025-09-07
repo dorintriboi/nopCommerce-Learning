@@ -11,13 +11,13 @@ public record BlogCategoryBlogPostModel: BaseNopEntityModel
 
     public int BlogPostId { get; set; }
 
-    [NopResourceDisplayName("Admin.ContentManagement.BlogCategories.BlogPosts.Fields.Product")]
+    [NopResourceDisplayName("Admin.ContentManagement.BlogCategories.BlogPost.Fields.Blog")]
     public string BlogPostName { get; set; }
 
-    [NopResourceDisplayName("Admin.ContentManagement.BlogCategories.BlogPosts.Fields.IsFeaturedProduct")]
-    public bool IsFeaturedProduct { get; set; }
+    [NopResourceDisplayName("Admin.ContentManagement.BlogCategories.BlogPost.Fields.IsFeaturedBlog")]
+    public bool IsFeaturedBlog { get; set; }
 
-    [NopResourceDisplayName("Admin.ContentManagement.BlogCategories.BlogPosts.Fields.DisplayOrder")]
+    [NopResourceDisplayName("Admin.ContentManagement.BlogCategories.BlogPost.Fields.DisplayOrder")]
     public int DisplayOrder { get; set; }
 
     #endregion

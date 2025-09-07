@@ -13,6 +13,11 @@ public static partial class NopModelCacheDefaults
     /// Key for categories caching
     /// </summary>
     public static CacheKey CategoriesListKey => new("Nop.pres.admin.categories.list");
+    
+    /// <summary>
+    /// Key for blog categories caching
+    /// </summary>
+    public static CacheKey BlogCategoriesListKey => new("Nop.pres.admin.blog.categories.list");
 
     /// <summary>
     /// Key for manufacturers caching

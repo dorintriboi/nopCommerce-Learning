@@ -9,12 +9,12 @@ namespace Nop.Services.Blogs.Category;
 public partial interface IBlogCategoryService
 {
      /// <summary>
-    /// Check the possibility of adding products to the category for the current vendor
+    /// Check the possibility of adding blogs to the category for the current vendor
     /// </summary>
-    /// <param name="category">Category</param>
-    /// <param name="allCategories">All categories</param>
+    /// <param name="category">Blog Category</param>
+    /// <param name="allCategories">All blog categories</param>
     /// <returns>A task that represents the asynchronous operation</returns>
-    Task<bool> CanVendorAddProductsAsync(BlogCategory category, IList<BlogCategory> allCategories = null);
+    Task<bool> CanVendorAddBlogPostsAsync(BlogCategory category, IList<BlogCategory> allCategories = null);
 
     /// <summary>
     /// Delete category
@@ -37,7 +37,6 @@ public partial interface IBlogCategoryService
     /// Gets all categories
     /// </summary>
     /// <param name="categoryName">Category name</param>
-    /// <param name="storeId">Store identifier; 0 if you want to get all records</param>
     /// <param name="pageIndex">Page index</param>
     /// <param name="pageSize">Page size</param>
     /// <param name="showHidden">A value indicating whether to show hidden records</param>
@@ -135,7 +134,7 @@ public partial interface IBlogCategoryService
     /// </summary>
     /// <param name="blogCategory">Product category</param>
     /// <returns>A task that represents the asynchronous operation</returns>
-    Task DeleteProductCategoryAsync(BlogPostBlogCategoryMapping blogCategory);
+    Task DeleteBlogCategoryAsync(BlogPostBlogCategoryMapping blogCategory);
 
     /// <summary>
     /// Deletes a list of product category mapping
@@ -155,7 +154,7 @@ public partial interface IBlogCategoryService
     /// A task that represents the asynchronous operation
     /// The task result contains the product a category mapping collection
     /// </returns>
-    Task<IPagedList<BlogPostBlogCategoryMapping>> GetProductCategoriesByCategoryIdAsync(int categoryId,
+    Task<IPagedList<BlogPostBlogCategoryMapping>> GetBlogCategoriesByCategoryIdAsync(int categoryId,
         int pageIndex = 0, int pageSize = int.MaxValue, bool showHidden = false);
 
     /// <summary>
@@ -166,14 +165,14 @@ public partial interface IBlogCategoryService
     /// A task that represents the asynchronous operation
     /// The task result contains the product category mapping
     /// </returns>
-    Task<BlogPostBlogCategoryMapping> GetProductCategoryByIdAsync(int productCategoryId);
+    Task<BlogPostBlogCategoryMapping> GetBlogCategoryByIdAsync(int productCategoryId);
 
     /// <summary>
     /// Inserts a product category mapping
     /// </summary>
     /// <param name="productCategory">>Product category mapping</param>
     /// <returns>A task that represents the asynchronous operation</returns>
-    Task InsertProductCategoryAsync(BlogPostBlogCategoryMapping productCategory);
+    Task InsertBlogPostBlogCategoryAsync(BlogPostBlogCategoryMapping productCategory);
 
     /// <summary>
     /// Updates the product category mapping 

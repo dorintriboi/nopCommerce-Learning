@@ -1,7 +1,11 @@
 ﻿using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Domain.Blogs;
+using Nop.Core.Domain.Catalog;
+using Nop.Core.Domain.Localization;
 using Nop.Data;
+using Nop.Services.Localization;
+using Nop.Services.Security;
 using Nop.Services.Stores;
 
 namespace Nop.Services.Blogs.Blog;
@@ -9,31 +13,32 @@ namespace Nop.Services.Blogs.Blog;
 /// <summary>
 /// Blog service
 /// </summary>
-public partial class BlogService : IBlogService
+public partial class BlogService(
+    IRepository<BlogComment> blogCommentRepository,
+    IRepository<BlogPost> blogPostRepository,
+    IStaticCacheManager staticCacheManager,
+    IWorkContext workContext,
+    ILanguageService languageService,
+    IAclService aclService,
+    IRepository<LocalizedProperty> localizedPropertyRepository,
+    IStoreMappingService storeMappingService)
+    : IBlogService
 {
     #region Fields
 
-    protected readonly IRepository<BlogComment> _blogCommentRepository;
-    protected readonly IRepository<BlogPost> _blogPostRepository;
-    protected readonly IStaticCacheManager _staticCacheManager;
-    protected readonly IStoreMappingService _storeMappingService;
+    protected readonly ILanguageService _languageService = languageService;
+    protected readonly IRepository<LocalizedProperty> _localizedPropertyRepository = localizedPropertyRepository;
+    protected readonly IAclService _aclService = aclService;
+    protected readonly IRepository<BlogComment> _blogCommentRepository = blogCommentRepository;
+    protected readonly IRepository<BlogPost> _blogPostRepository = blogPostRepository;
+    protected readonly IStaticCacheManager _staticCacheManager = staticCacheManager;
+    protected readonly IStoreMappingService _storeMappingService = storeMappingService;
+    protected readonly IWorkContext _workContext = workContext;
     private static readonly char[] _separator = [','];
 
     #endregion
 
     #region Ctor
-
-    public BlogService(
-        IRepository<BlogComment> blogCommentRepository,
-        IRepository<BlogPost> blogPostRepository,
-        IStaticCacheManager staticCacheManager,
-        IStoreMappingService storeMappingService)
-    {
-        _blogCommentRepository = blogCommentRepository;
-        _blogPostRepository = blogPostRepository;
-        _staticCacheManager = staticCacheManager;
-        _storeMappingService = storeMappingService;
-    }
 
     #endregion
 
@@ -62,6 +67,11 @@ public partial class BlogService : IBlogService
     public virtual async Task<BlogPost> GetBlogPostByIdAsync(int blogPostId)
     {
         return await _blogPostRepository.GetByIdAsync(blogPostId, cache => default, useShortTermCache: true);
+    }
+
+    public virtual async Task<IList<BlogPost>> GetBlogsByIdsAsync(int[] blogIds)
+    {
+        return await _blogPostRepository.GetByIdsAsync(blogIds, cache => default, false);
     }
 
     /// <summary>
@@ -140,7 +150,8 @@ public partial class BlogService : IBlogService
         foreach (var blogPost in blogPostsAll)
         {
             var tags = await ParseTagsAsync(blogPost);
-            if (!string.IsNullOrEmpty(tags.FirstOrDefault(t => t.Equals(tag, StringComparison.InvariantCultureIgnoreCase))))
+            if (!string.IsNullOrEmpty(tags.FirstOrDefault(t =>
+                    t.Equals(tag, StringComparison.InvariantCultureIgnoreCase))))
                 taggedBlogPosts.Add(blogPost);
         }
 
@@ -159,9 +170,12 @@ public partial class BlogService : IBlogService
     /// A task that represents the asynchronous operation
     /// The task result contains the blog post tags
     /// </returns>
-    public virtual async Task<IList<BlogPostTag>> GetAllBlogPostTagsAsync(int storeId, int languageId, bool showHidden = false)
+    public virtual async Task<IList<BlogPostTag>> GetAllBlogPostTagsAsync(int storeId, int languageId,
+        bool showHidden = false)
     {
-        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopBlogsDefaults.BlogTagsCacheKey, languageId, storeId, showHidden);
+        var cacheKey =
+            _staticCacheManager.PrepareKeyForDefaultCache(NopBlogsDefaults.BlogTagsCacheKey, languageId, storeId,
+                showHidden);
 
         var blogPostTags = await _staticCacheManager.GetAsync(cacheKey, async () =>
         {
@@ -178,11 +192,7 @@ public partial class BlogService : IBlogService
                         bpt.Name.Equals(tag, StringComparison.InvariantCultureIgnoreCase));
                     if (foundBlogPostTag == null)
                     {
-                        foundBlogPostTag = new BlogPostTag
-                        {
-                            Name = tag,
-                            BlogPostCount = 1
-                        };
+                        foundBlogPostTag = new BlogPostTag { Name = tag, BlogPostCount = 1 };
                         rezBlogPostTags.Add(foundBlogPostTag);
                     }
                     else
@@ -226,12 +236,14 @@ public partial class BlogService : IBlogService
     /// A task that represents the asynchronous operation
     /// The task result contains the filtered posts
     /// </returns>
-    public virtual async Task<IList<BlogPost>> GetPostsByDateAsync(IList<BlogPost> blogPosts, DateTime dateFrom, DateTime dateTo)
+    public virtual async Task<IList<BlogPost>> GetPostsByDateAsync(IList<BlogPost> blogPosts, DateTime dateFrom,
+        DateTime dateTo)
     {
         ArgumentNullException.ThrowIfNull(blogPosts);
 
         var rez = await blogPosts
-            .Where(p => dateFrom.Date <= (p.StartDateUtc ?? p.CreatedOnUtc) && (p.StartDateUtc ?? p.CreatedOnUtc).Date <= dateTo)
+            .Where(p => dateFrom.Date <= (p.StartDateUtc ?? p.CreatedOnUtc) &&
+                        (p.StartDateUtc ?? p.CreatedOnUtc).Date <= dateTo)
             .ToListAsync();
 
         return rez;
@@ -297,7 +309,8 @@ public partial class BlogService : IBlogService
     /// A task that represents the asynchronous operation
     /// The task result contains the comments
     /// </returns>
-    public virtual async Task<IList<BlogComment>> GetAllCommentsAsync(int customerId = 0, int storeId = 0, int? blogPostId = null,
+    public virtual async Task<IList<BlogComment>> GetAllCommentsAsync(int customerId = 0, int storeId = 0,
+        int? blogPostId = null,
         bool? approved = null, DateTime? fromUtc = null, DateTime? toUtc = null, string commentText = null)
     {
         return await _blogCommentRepository.GetAllAsync(query =>
@@ -365,7 +378,8 @@ public partial class BlogService : IBlogService
     /// A task that represents the asynchronous operation
     /// The task result contains the number of blog comments
     /// </returns>
-    public virtual async Task<int> GetBlogCommentsCountAsync(BlogPost blogPost, int storeId = 0, bool? isApproved = null)
+    public virtual async Task<int> GetBlogCommentsCountAsync(BlogPost blogPost, int storeId = 0,
+        bool? isApproved = null)
     {
         var query = _blogCommentRepository.Table.Where(comment => comment.BlogPostId == blogPost.Id);
 
@@ -375,7 +389,8 @@ public partial class BlogService : IBlogService
         if (isApproved.HasValue)
             query = query.Where(comment => comment.IsApproved == isApproved.Value);
 
-        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopBlogsDefaults.BlogCommentsNumberCacheKey, blogPost, storeId, isApproved);
+        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopBlogsDefaults.BlogCommentsNumberCacheKey,
+            blogPost, storeId, isApproved);
 
         return await _staticCacheManager.GetAsync(cacheKey, async () => await query.CountAsync());
     }
@@ -418,6 +433,63 @@ public partial class BlogService : IBlogService
     public virtual async Task UpdateBlogCommentAsync(BlogComment blogComment)
     {
         await _blogCommentRepository.UpdateAsync(blogComment);
+    }
+
+    public async Task<IPagedList<BlogPost>> SearchBlogsAsync(int pageIndex = 0, int pageSize = Int32.MaxValue,
+        IList<int> categoryIds = null,
+        IList<int> manufacturerIds = null, int vendorId = 0, int warehouseId = 0, bool visibleIndividuallyOnly = false,
+        bool excludeFeaturedBlogs = false, decimal? priceMin = null, decimal? priceMax = null, int blogTagId = 0,
+        string keywords = null, bool searchDescriptions = false, bool searchManufacturerPartNumber = true,
+        bool searchSku = true, bool searchBlogTags = false, int languageId = 0,
+        IList<SpecificationAttributeOption> filteredSpecOptions = null,
+        ProductSortingEnum orderBy = ProductSortingEnum.Position, bool showHidden = false,
+        bool? overridePublished = null)
+    {
+        //some databases don't support int.MaxValue
+        if (pageSize == int.MaxValue)
+            pageSize = int.MaxValue - 1;
+
+        var productsQuery = _blogPostRepository.Table;
+
+        var customer = await _workContext.GetCurrentCustomerAsync();
+
+        if (!showHidden)
+        {
+            //apply ACL constraints
+            productsQuery = await _aclService.ApplyAcl(productsQuery, customer);
+        }
+
+        var providerResults = new List<int>();
+
+        if (!string.IsNullOrEmpty(keywords))
+        {
+            var langs = await _languageService.GetAllLanguagesAsync(showHidden: true);
+
+            //Set a flag which will to points need to search in localized properties. If showHidden doesn't set to true should be at least two published languages.
+            var searchLocalizedValue =
+                languageId > 0 && langs.Count >= 2 && (showHidden || langs.Count(l => l.Published) >= 2);
+            var productsByKeywords = new List<int>().AsQueryable();
+            var runStandardSearch = showHidden;
+            productsQuery =
+                from p in productsQuery
+                join pbk in productsByKeywords on p.Id equals pbk
+                select p;
+        }
+
+
+        if (providerResults.Any() && orderBy == ProductSortingEnum.Position && !showHidden)
+        {
+            var sortedProducts = from p in productsQuery
+                join pr in providerResults.Select((id, ind) => new { ind, id }) on p.Id equals pr.id into orderSeq
+                from os in orderSeq.DefaultIfEmpty()
+                orderby os == null ? int.MaxValue : os.ind
+                select p;
+
+
+            return await sortedProducts.ToPagedListAsync(pageIndex, pageSize);
+        }
+
+        return await productsQuery.ToPagedListAsync(pageIndex, pageSize);
     }
 
     #endregion

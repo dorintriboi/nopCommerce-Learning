@@ -37,7 +37,21 @@ public class LocalizationMigration: MigrationBase
             ["Admin.ContentManagement.BlogCategories.List.SearchPublished"] = "Published",
             ["Admin.ContentManagement.BlogCategories.List.SearchPublished.All"] = "All",
             ["Admin.ContentManagement.BlogCategories.List.SearchPublished.PublishedOnly"] = "Published only",
-            ["Admin.ContentManagement.BlogCategories.List.SearchPublished.UnpublishedOnly"] = "Unpublished only"
+            ["Admin.ContentManagement.BlogCategories.List.SearchPublished.UnpublishedOnly"] = "Unpublished only",
+            ["Admin.ContentManagement.Blog.Categories.AddNew"] = "Add new blog category",
+            ["Admin.ContentManagement.Blog.Categories.BackToList"] = "back to blog category list",
+            ["Admin.ContentManagement.Blog.Categories.Info"] = "Blog category info",
+            ["Admin.ContentManagement.Blog.Categories.Display"] = "Display",
+            ["Admin.ContentManagement.Blog.Categories.Posts"] = "Blogs",
+            ["Admin.ContentManagement.Blog.Categories.Fields.Parent.None"] = "[None]",
+            ["Admin.ContentManagement.Blog.Categories.BlogPosts.SaveBeforeEdit"] = "You need to save the blog category before you can add blogs for this category page.",
+            ["Admin.ContentManagement.Blog.Categories.Added"] = "The new blog category has been added successfully.",
+            ["ActivityLog.AddNewBlogCategory"] = "Added a new blog category ('{0}')",
+            ["Admin.ContentManagement.BlogCategories.BlogPost.Fields.Blog"] = "Blog",
+            ["Admin.ContentManagement.BlogCategories.BlogPost.Fields.IsFeaturedBlog"] = "Is featured blog?",
+            ["Admin.ContentManagement.BlogCategories.BlogPost.Fields.DisplayOrder"] = "Display order",
+            ["Admin.ContentManagement.Blog.Categories.BlogPosts.AddNew"] = "Add a new blog",
+            ["Admin.ContentManagement.Blog.Categories.EditBlogCategoryDetails"] = "Edit blog category details",
         }, languageId);
 
         #endregion
